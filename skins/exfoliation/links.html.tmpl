@@ -1,0 +1,219 @@
+## exfoliation for weewx - Copyright 2012-2013 Matthew Wall
+## $Id: links.html.tmpl 1751 2017-10-10 03:10:18Z mwall $
+#errorCatcher Echo
+#encoding UTF-8
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head profile="http://www.w3.org/2005/10/profile">
+    <!-- exfoliation for weewx - Copyright Matthew Wall -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name='viewport' content='width=device-width' />
+    <title>$station.location Weather Links</title>
+    <link rel="stylesheet" type="text/css" href="exfoliation.css"/>
+    <link rel="icon" type="image/png" href="favicon.ico" />
+    <style>
+.feeds_column {
+  float: left;
+  padding-right: 3em;
+}
+.feeds_column img {
+  border: none;
+  width: 140px;
+  padding: 2px;
+}
+@media (max-width:600px) {
+  .feeds_column img { width: 100%; }
+}
+    </style>
+  </head>
+
+  <body>
+    #include "header.inc"
+
+    <div id='content'>
+      <div class='feeds_column'>
+
+#if $Extras.has_key('links_local_forecast_url') or $Extras.has_key('links_marine_forecast_url') or $Extras.has_key('links_tide_table_url')
+<p>&nbsp;</p>
+#if $Extras.has_key('links_local_forecast_url')
+<a href='$Extras.links_local_forecast_url'>Local Forecast</a><br/>
+#end if
+#if $Extras.has_key('links_marine_forecast_url')
+<a href='$Extras.links_marine_forecast_url'>Marine Forecast</a><br/>
+#end if
+#if $Extras.has_key('links_tide_table_url')
+<a href="$Extras.links_tide_table_url">Tide Table</a><br/>
+#end if
+#end if
+
+#if $Extras.has_key('links_nws_48hour_forecast_url') or $Extras.has_key('links_nws_forecast_url') or $Extras.has_key('links_nws_marine_forecast_url')
+<p>&nbsp;</p>
+#if $Extras.has_key('links_nws_48hour_forecast_url')
+<a href="$Extras.links_nws_48hour_forecast_url">NWS 48-Hour Forecast</a><br/>
+#end if
+#if $Extras.has_key('links_nws_forecast_url')
+<a href="$Extras.links_nws_forecast_url">NWS 7-Day Forecast</a><br/>
+#end if
+#if $Extras.has_key('links_nws_marine_forecast_url')
+<a href="$Extras.links_nws_marine_forecast_url">NWS Marine Forecast</a><br/>
+#end if
+#end if
+
+#if $Extras.has_key('links_intellicast_forecast_url') or $Extras.has_key('links_intellicast_satellite_url')
+<p>&nbsp;</p>
+#if $Extras.has_key('links_intellicast_forecast_url')
+<a href="$Extras.links_intellicast_forecast_url">Intellicast Forecast</a><br/>
+#end if
+#if $Extras.has_key('links_intellicast_satellite_url')
+<a href="$Extras.links_intellicast_satellite_url">Intellicast Satellite</a><br/>
+#end if
+#end if
+
+#if $Extras.has_key('links_weather_underground_url')
+<p>&nbsp;</p>
+<a href="$Extras.links_weather_underground_url">Weather Underground</a><br/>
+#end if
+
+#if $Extras.has_key('links_owm_url')
+<p>&nbsp;</p>
+<a href="$Extras.links_owm_url">OpenWeatherMap</a><br/>
+#end if
+
+#if $Extras.has_key('links_show_rss') and $Extras.links_show_rss == 'true'
+<p>&nbsp;</p>
+<a href="weewx_rss.xml">RSS</a><br/>
+#end if
+
+      </div>
+
+
+      <div class='feeds_column'>
+
+#if $Extras.has_key('links_radar_local_img')
+<p>
+<a  href="$Extras.links_radar_local_img">Local Radar<br/>
+<img src="$Extras.links_radar_local_img"/></a>
+</p>
+#end if
+
+#if $Extras.has_key('links_radar_regional_img')
+<p>
+<a  href="$Extras.links_radar_regional_img">Regional Radar<br/>
+<img src="$Extras.links_radar_regional_img"/></a>
+</p>
+#end if
+
+#if $Extras.has_key('links_radar_national_img')
+<p>
+<a  href="$Extras.links_radar_national_img">National Radar<br/>
+<img src="$Extras.links_radar_national_img"/></a>
+</p>
+#end if
+
+      </div>
+
+
+      <div class='feeds_column'>
+
+#if $Extras.has_key('links_satellite_i8_img')
+<p>
+<a href="$Extras.links_satellite_i8_img">Colorized<br/>
+<img src="$Extras.links_satellite_i8_img"/></a>
+</p>
+#end if
+
+#if $Extras.has_key('links_satellite_wv_img')
+<p>
+<a href="$Extras.links_satellite_wv_img">Water Vapor<br/>
+<img src="$Extras.links_satellite_wv_img"/></a>
+</p>
+#end if
+
+#if $Extras.has_key('links_satellite_ir_img')
+<p>
+<a href="$Extras.links_satellite_ir_img">Infrared<br/>
+<img src="$Extras.links_satellite_ir_img"/></a>
+</p>
+#end if
+
+#if $Extras.has_key('links_satellite_vs_img')
+<p>
+<a href="$Extras.links_satellite_vs_img">Visible<br/>
+<img src="$Extras.links_satellite_vs_img"/></a>
+</p>
+#end if
+
+      </div>
+
+
+      <div class='feeds_column'>
+
+#if $Extras.has_key('links_forecast_48hour_img')
+<p>
+<a href="$Extras.links_forecast_48hour_img">48 Hour<br/>
+<img src="$Extras.links_forecast_48hour_img"/></a>
+</p>
+#end if
+
+#if $Extras.has_key('links_forecast_surface_img')
+<p>
+<a  href="$Extras.links_forecast_surface_img">US Surface<br/>
+<img src="$Extras.links_forecast_surface_img"/></a>
+</p>
+#end if
+
+#if $Extras.has_key('links_forecast_fourpanel_img')
+<p>
+<a  href="$Extras.links_forecast_fourpanel_img">Four Panel<br/>
+<img src="$Extras.links_forecast_fourpanel_img"/></a>
+</p>
+#end if
+
+      </div>
+
+
+      <div class='feeds_column'>
+
+#if $Extras.has_key('links_intellicast_satellite_img')
+<p>
+<a href="$Extras.links_intellicast_satellite_img">Intellicast Satellite<br/>
+<img src="$Extras.links_intellicast_satellite_img"/></a>
+</p>
+#end if
+
+#if $Extras.has_key('links_intellicast_radar_img')
+<p>
+<a  href="$Extras.links_intellicast_radar_img">Intellicast Radar<br/>
+<img src="$Extras.links_intellicast_radar_img"/></a>
+</p>
+#end if
+
+      </div>
+
+
+      <div class='feeds_column'>
+
+#if $Extras.has_key('links_aurora_forecast_n_img')
+<p>
+<a href="$Extras.links_aurora_forecast_n_img">Aurora Borealis<br/>
+<img src="$Extras.links_aurora_forecast_n_img"/></a>
+</p>
+#end if
+
+#if $Extras.has_key('links_aurora_forecast_s_img')
+<p>
+<a href="$Extras.links_aurora_forecast_s_img">Aurora Australius<br/>
+<img src="$Extras.links_aurora_forecast_s_img"/></a>
+</p>
+#end if
+
+      </div>
+
+#if $Extras.has_key('links_text_forecast_url')
+      <iframe src="$Extras.links_text_forecast_url" width='700' height='800' frameborder='0' marginwidth='5'>Extended Forecast</iframe>
+#end if
+
+    </div>
+    #include "footer.inc"
+  </body>
+</html>

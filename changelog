@@ -1,0 +1,187 @@
+0.45 27jan2018
+* remove 'vertical' override to strip orientation
+
+0.44 10oct2017
+* incorporate changes from forecast 3.2.18
+* clean up css
+* consolidate navigation css
+* better layout for narrow devices
+
+0.43 07sep2017
+* disable station page by default, and do not generate station plots
+
+0.42 06sep2017
+* fix iconic bar spacing for horizontal timeline
+
+0.41 20aug2017
+* update forecast_table to match latest forecast extension
+* added forecast_strip
+* added forecast_iconic
+* added skin configuration for forecast source and forecast format
+* added skin configuration for forecast comparison
+* make layout work better on small screens and touch screens
+* use Roboto font throughout
+
+0.40 01jan2017
+* fixed forecast table settings on index page
+
+0.39 26dec2016
+* use forecast_table.inc from forecast 3.2.6
+
+0.38 14aug2016
+* stablize the per-page configuration directives
+* make directives consistent  warning!  this breaks old directives!
+* use forecast_table directly from forecast extension
+* eliminate duplicate forecast code
+* clean up the history page using conditionals
+* use cookies for history period
+
+0.37
+* added overrides in forecast.html.tmpl
+
+0.36 14oct2015
+* update readme with weewx 3.x instructions
+
+0.35 06aug2015
+* deal with weewx 3.2.0 bugfix to non-pyephem sunrise/sunset
+
+0.34 08mar2015
+* update forecast_table.inc to match the 3.0.5 forecast release
+
+0.33 07dec2014
+* remove absolute paths to includes
+
+0.32 06dec2014
+* specify mbar for barometer trend in index.html.tmpl (thanks to kenneth baker)
+* added conditional for displaying inside temp/hum (thanks to kenneth baker)
+* added max/min times as mouseovers for index.html page
+
+0.31 27aug2014
+* fixed font size for tides table
+* forecast_table.inc v0.3 with overrides from Extras.forecast_table_settings
+* rename Extras.forecast_service to Extras.forecast_source
+* fix tide listings
+* minor adjustments to tide listing layout
+* fix sunrise/sunset/moonrise/moonset listings in forecast.html
+
+0.30 22jul2014
+* make forecast table path a variable in Extras
+* include the forecast_table.inc in installer script
+
+0.29 21jul2014
+* fixed installer script - eliminate day, week, month, year
+
+0.28 20jul2014
+* bettery display of multiple forecasts
+* side-by-side layout on main page, fallback automatically to single column
+* put day/week/month/year into a history page
+* better handling of station and forecast Extras
+
+0.27
+* fix 18 vs 8 compass points
+
+0.26 02feb2014
+* use INST_SKIN_ROOT in install.py
+* improved feedback when search list extension is not installed
+* default to cmon_sqlite rather than computer_sqlite
+
+0.25 01feb2014
+* package for use with weewx 2.6 extension installer
+* default to locale for date/time strings
+* do not display tide column unless there are tides
+* added aurora forecasts to links page
+* added open weathermap to links page
+* use condensed forecast table (inspiration from marten oosterhoff)
+* added uv value and graphs
+* added direct support for zambretti forecasts
+* added support for station/computer health
+* push rss link to links page
+* make tides work independently of any other forecasts
+* improve popup graph layout
+* use cookies to remember station health metric control states
+
+0.24 02jan2014
+* added column for alltime in hilo stats
+* adjust pop column width
+* constrain yscale to 0,100 where appropriate
+
+0.23 01jan2014
+* added daylight hours
+* added show/rain icons to precipitation amounts
+* added column headings on index page
+
+0.22 09nov2013
+* improve legend layout
+* make css a bit more robust
+* include snowflake and raindrop icons for accumulation
+
+0.21 11oct2013
+* use forecast api v2 conventions - CheetahGenerator is now part of weewx
+* specify a stale_age for the forecast.html file
+* punt the superfluous directory for RSS
+* use pattern when copying icons
+* fix bug in display of precipitation probability
+
+0.20 20sep2013
+* format strings must begin with a % character
+
+0.19 17sep2013
+* default to FileGenerator, but instructors for how to enable forecasting
+* reduce db queries for summaries
+* do not display units for rainfall since they are already in columns
+
+0.18 07sep2013
+* display precipitation quanities properly (snow and rain)
+* fixed units conversions
+* use $unit.label for all legends
+* minor cleanup of some old cruft
+
+0.17 04sep2013
+* make font size larger in forecast table
+* fix some table layout/sizing issues
+* do not override body on forecast page
+
+0.16 03sep2013
+* use better values for precipitation in the 'current' page
+* display forecasts from multiple sources if available
+* display qpf and qsf in forecasts if available
+
+0.15 01sep2013
+* eliminate valign, do it using css instead
+* workaround sunrise/sunset inconsistancy (string versus ValueHelper)
+* vertically center wind speeds
+* punt the icon_dir variable, use icons instead
+* explicit enumeration of icon images that must be copied
+
+0.14 01sep2013
+* integrate forecast data into current page
+* display today's outlook in current page
+* display tides in current page, if available
+* add forecast link to navigation, if forecasting is available
+
+0.13 30aug2013
+* complete support for the forecasting module
+* aw icon set derived from Adam Whitcroft's climacons http://adamwhitcroft.com
+* wu icon set derived from weather underground icons
+* mo icon set derived from uk met office icons
+
+0.12 20jul2013
+* better scaling for mobile devices
+* minor consolidation of link urls
+* fixed NONE variable in skin.conf
+* fixed nws 48hour image link
+
+0.3 03jan2013
+* added a 'wx' for the favicon
+* use - rather than N/A when values not available
+* cleanup sun/moon/phase layout
+* links to graphs from values in table in index page
+* no underlines in links in metrics tables
+* added two-tone bar charts
+* compactify layout of metrics table on index page
+
+0.2 01jan2013
+* make index page suitable for mobile/phone/small devices
+
+0.1 29dec2012
+* initial implementation

@@ -1,0 +1,209 @@
+## exfoliation for weewx - Copyright 2012-2014 Matthew Wall
+## $Id: history.html.tmpl 1751 2017-10-10 03:10:18Z mwall $
+#errorCatcher Echo
+#encoding UTF-8
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head profile="http://www.w3.org/2005/10/profile">
+    <!-- exfoliation for weewx - Copyright Matthew Wall -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name='viewport' content='width=device-width' />
+    <title>$station.location Weather History</title>
+    <link rel="stylesheet" type="text/css" href="exfoliation.css"/>
+    <link rel="icon" type="image/png" href="favicon.ico" />
+    <script type='text/javascript' src='exfoliation.js'></script>
+    <script type='text/javascript' src='cookies.js'></script>
+    <style>
+#data_table .metrics {
+  width: auto;
+  padding-top: 20px;
+}
+#data_table .navigation_controls {
+  float: right;
+}
+#data_table .selectors {
+  text-align: right;
+  padding-top: 20px;
+}
+.data_graphs img {
+  padding-top: 2em;
+}
+@media (max-width:800px) {
+  .data_graphs img { width: 100%; }
+}
+    </style>
+    <script>
+var periods = ['day','week','month','year'];
+function choose_pane(id) {
+  set_cookie('weather.history.pane', id);
+  for(var i=0; i<periods.length; i++) {
+    var c = document.getElementById('control_'+periods[i]);
+    if(c) c.className = (periods[i] == id) ? 'btn_selected' : 'btn';
+    var g = document.getElementById('graphs_'+periods[i]);
+    if(g) g.style.display = (periods[i] == id) ? 'block' : 'none';
+  }
+}
+function setup() {
+  var pane = get_cookie('weather.history.pane', 'day');
+  choose_pane(pane);
+}
+function openURL(urlname) {
+  window.location = urlname;
+}
+function openNoaaFile(date) {
+  window.location = "NOAA/NOAA-" + date + ".txt";
+}
+    </script>
+  </head>
+
+  <body onload='setup();'>
+    #include "header.inc"
+
+    <div id='content'>
+      <div id='data_table'>
+        <div class='navigation_controls'>
+          <span class='btn_selected' id='control_day' href="#" onclick="choose_pane('day')">Day</span>
+          <span class='btn' id='control_week' href="#" onclick="choose_pane('week')">Week</span>
+          <span class='btn' id='control_month' href="#" onclick="choose_pane('month')">Month</span>
+          <span class='btn' id='control_year' href="#" onclick="choose_pane('year')">Year</span>
+        </div>
+        <div class='selectors'>
+          <p>Monthly Summary:&nbsp;
+            <select NAME=noaaselect onchange="openNoaaFile(value)">
+              #for $monthYear in $SummaryByMonth
+              <option value="$monthYear">$monthYear</option>
+              #end for
+	      <option selected>-Select month-</option>
+            </select>
+            <br/>
+            Yearly Summary:&nbsp;
+            <select NAME=noaaselect onchange="openNoaaFile(value)">
+              #for $y in $SummaryByYear
+              <option value="$y">$y</option>
+              #end for
+	      <option selected>-Select year-</option>
+            </select>
+            <br/>
+          </p>
+        </div>
+        #include "hilo.inc"
+      </div>
+      <div id='data_graphs'>
+
+      <div id='graphs_day' class='data_graphs' style='display:none'>
+#if $Extras.has_key('current_show_inside') and $Extras.current_show_inside == 'true'
+        <img src="dayinouttempdew.png" alt="temperatures" />
+        <img src="dayinouthum.png" alt="humidity" />
+#else
+        <img src="dayouttempdew.png" alt="temperatures" />
+        <img src="dayouthum.png" alt="humidity" />
+#end if
+        <img src="daybarometer.png" alt="barometer"/>
+        <img src="daytempchill.png" alt="heatchill" />
+        <img src="daywind.png" alt="wind" />
+        <img src="daywinddir.png" alt="wind direction" />
+        <img src="daywindvec.png" alt="wind vectors" />
+        <img src="dayrain.png" alt="rain" />
+        #if $day.lightning and $day.lightning.has_data
+        <img src="daylightning.png" alt="lightning" />
+        #end if
+        #if $day.cloudbase.has_data
+        <img src="daycloudbase.png" alt="cloudbase" />
+        #end if
+        #if $day.radiation.has_data
+        <img src="dayradiation.png" alt="radiation" />
+        #end if
+        #if $day.UV.has_data
+        <img src="dayuv.png" alt="uv" />
+        #end if
+      </div>
+
+      <div id='graphs_week' class='data_graphs' style='display:none'>
+#if $Extras.has_key('current_show_inside') and $Extras.current_show_inside == 'true'
+        <img src="weekinouttempdew.png" alt="temperatures" />
+        <img src="weekinouthum.png" alt="humidity" />
+#else
+        <img src="weekouttempdew.png" alt="temperatures" />
+        <img src="weekouthum.png" alt="humidity" />
+#end if
+        <img src="weekbarometer.png" alt="barometer"/>
+        <img src="weektempchill.png" alt="heatchill" />
+        <img src="weekwind.png" alt="wind" />
+        <img src="weekwinddir.png" alt="wind direction" />
+        <img src="weekwindvec.png" alt="wind vectors" />
+        <img src="weekrain.png" alt="rain" />
+        #if $week.lightning and $day.lightning.has_data
+        <img src="weeklightning.png" alt="lightning" />
+        #end if
+        #if $week.cloudbase and $day.cloudbase.has_data
+        <img src="weekcloudbase.png" alt="cloudbase" />
+        #end if
+        #if $week.radiation.has_data
+        <img src="weekradiation.png" alt="radiation" />
+        #end if
+        #if $week.UV.has_data
+        <img src="weekuv.png" alt="uv" />
+        #end if
+      </div>
+
+      <div id='graphs_month' class='data_graphs' style='display:none'>
+#if $Extras.has_key('current_show_inside') and $Extras.current_show_inside == 'true'
+        <img src="monthinouttempdew.png" alt="temperatures" />
+        <img src="monthinouthum.png" alt="humidity" />
+#else
+        <img src="monthouttempdew.png" alt="temperatures" />
+        <img src="monthouthum.png" alt="humidity" />
+#end if
+        <img src="monthbarometer.png" alt="barometer"/>
+        <img src="monthtempchill.png" alt="heatchill" />
+        <img src="monthwind.png" alt="wind" />
+        <img src="monthwinddir.png" alt="wind direction" />
+        <img src="monthwindvec.png" alt="wind vectors" />
+        <img src="monthrain.png" alt="rain" />
+        #if $month.lightning and $day.lightning.has_data
+        <img src="monthlightning.png" alt="lightning" />
+        #end if
+        #if $month.cloudbase and $day.cloudbase.has_data
+        <img src="monthcloudbase.png" alt="cloudbase" />
+        #end if
+        #if $month.radiation.has_data
+        <img src="monthradiation.png" alt="radiation" />
+        #end if
+        #if $month.UV.has_data
+        <img src="monthuv.png" alt="uv" />
+        #end if
+      </div>
+
+      <div id='graphs_year' class='data_graphs' style='display:none'>
+#if $Extras.has_key('current_show_inside') and $Extras.current_show_inside == 'true'
+        <img src="yearinouttempdew.png" alt="temperatures" />
+        <img src="yearinouthum.png" alt="humidity" />
+#else
+        <img src="yearouttempdew.png" alt="temperatures" />
+        <img src="yearouthum.png" alt="humidity" />
+#end if
+        <img src="yearbarometer.png" alt="barometer"/>
+        <img src="yeartempchill.png" alt="heatchill" />
+        <img src="yearwind.png" alt="wind" />
+        <img src="yearwinddir.png" alt="wind direction" />
+        <img src="yearwindvec.png" alt="wind vectors" />
+        <img src="yearrain.png" alt="rain" />
+        #if $year.lightning and $day.lightning.has_data
+        <img src="yearlightning.png" alt="lightning" />
+        #end if
+        #if $year.cloudbase and $day.cloudbase.has_data
+        <img src="yearcloudbase.png" alt="cloudbase" />
+        #end if
+        #if $year.radiation.has_data
+        <img src="yearradiation.png" alt="radiation" />
+        #end if
+        #if $year.UV.has_data
+        <img src="yearuv.png" alt="uv" />
+        #end if
+      </div>
+
+      </div>
+    </div>
+    #include "footer.inc"
+  </body>
+</html>

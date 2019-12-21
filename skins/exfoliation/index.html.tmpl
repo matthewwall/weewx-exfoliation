@@ -1,0 +1,543 @@
+## exfoliation for weewx - Copyright 2012-2014 Matthew Wall
+## $Id: index.html.tmpl 1751 2017-10-10 03:10:18Z mwall $
+#errorCatcher Echo
+#encoding UTF-8
+
+
+## note: these thresholds are for millibar, not inHg
+#def get_pressure_trend($x)
+#if $x > 6
+      &#8679;&#8679;&#8679;
+#elif $x > 3
+      &#8679;&#8679;
+#elif $x > 0.5
+      &#8679;
+#elif $x < -6
+      &#8681;&#8681;&#8681;
+#elif $x < -3
+      &#8681;&#8681;
+#elif $x < 0.5
+      &#8681;
+#end if
+#end def
+
+#def get_winddir($x)
+#if $x is None:
+      -
+#elif $x < 22.5
+      &#8593;
+#elif $x < 67.5
+      &#8599;
+#elif $x < 112.5
+      &#8594;
+#elif $x < 157.5
+      &#8600;
+#elif $x < 202.5
+      &#8595;
+#elif $x < 247.5
+      &#8601;
+#elif $x < 292.5
+      &#8592;
+#elif $x < 337.5
+      &#8598;
+#else
+      &#8593;
+#end if
+#end def
+
+#def get_windspeed_trend($x)
+#if $x > 0
+      &#8679;
+#elif $x < 0
+      &#8681;
+#end if
+#end def
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml'>
+  <head profile='http://www.w3.org/2005/10/profile'>
+    <!-- exfoliation for weewx - Copyright Matthew Wall -->
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+    <meta name='viewport' content='width=device-width' />
+    <title>$station.location Current Weather Conditions</title>
+    <link rel='stylesheet' type='text/css' href='exfoliation.css'/>
+    <link rel='stylesheet' type='text/css' href='forecast_table.css'/>
+    <link rel='icon' type='image/png' href='favicon.ico' />
+    <style>
+      .block {
+        float: left;
+        padding-right: 50px;
+      }
+      .heatindex {
+        color: #aa4444;
+      }
+      .windchill {
+        color: #4444aa;
+      }
+      .temphi {
+        color: #aa4444;
+      }
+      .templo {
+        color: #4444aa;
+      }
+      .precip-img {
+        width: 32px;
+      }
+      .obvis-img {
+        width: 32px;
+      }
+      .pop-img {
+        width: 8px;
+      }
+      .table_heading {
+        font-size: 80%;
+        color: #888888;
+        border-bottom: 1px solid #cccccc;
+        padding-top: 20px;
+      }
+      .radar {
+        border: none;
+        width: 280px;
+        padding: 2px;
+      }
+      .zambretti {
+        font-size: 80%;
+      }
+      .forecast_summary {
+        width: '100%';
+      }
+    </style>
+    <script type='text/javascript' src='exfoliation.js'></script>
+    <script>
+      window.onload = function() { applypopups(); }
+    </script>
+  </head>
+
+  <body>
+#include "header.inc"
+
+#if $varExists('forecast') and $Extras.has_key('current_forecast_source')
+  #set $fc_summary = $forecast.weather_summary($Extras.current_forecast_source)
+#else
+  #set $fc_summary = 0
+#end if
+
+  <div id='content'>
+
+<div id='popupanchor' style='position:absolute; left:350px; top:80px;'></div>
+
+<div class='block'>
+
+<table class='metrics'>
+  <tr>
+    <td></td>
+    <td class='table_heading' colspan="2">ACTUAL</td>
+    <td class='table_heading'>HI/LO</td>
+    <td></td>
+#if $fc_summary
+    <td class='table_heading'>FORECAST</td>
+#end if
+  </tr>
+  <tr>
+    <td class='metric_name'>Temperature</td>
+    <td class='metric_large'><a href='dayouttemphilo.png' class='popup'>$current.outTemp.formatted</a></td>
+    <td class='metric_value'><a href='daytempchill.png' class='popup'><span class='heatindex'>$current.heatindex.formatted</span><br/><span class='windchill'>$current.windchill.formatted</span></a></td>
+    <td class='metric_value'>
+      <span title='$day.outTemp.maxtime'>$day.outTemp.max.formatted</span><br/>
+      <span title='$day.outTemp.mintime'>$day.outTemp.min.formatted</span></td>
+    <td class='metric_units'>$unit.label.outTemp</td>
+#if $fc_summary
+    <td class='metric_value'>
+      <span class='temphi'>$fc_summary.tempMax.nolabel('%.0f',' ')</span><br/>
+      <span class='templo'>$fc_summary.tempMin.nolabel('%.0f',' ')</span>
+    </td>
+#end if
+  </tr>
+
+  <tr>
+    <td class='metric_name'>Humidity</td>
+    <td class='metric_large' colspan='2' >
+      <a href='dayouthum.png' class='popup'>$current.outHumidity.formatted</a>
+    </td>
+    <td class='metric_value'>
+      <span title='$day.outHumidity.maxtime'>$day.outHumidity.max.formatted</span><br/>
+      <span title='$day.outHumidity.mintime'>$day.outHumidity.min.formatted</span></td>
+    <td class='metric_units'>$unit.label.outHumidity</td>
+#if $fc_summary
+    <td class='metric_value'>
+      $fc_summary.humidityMax.nolabel('%.0f',' ')<br/>
+      $fc_summary.humidityMin.nolabel('%.0f',' ')</td>
+#end if
+  </tr>
+
+  <tr>
+    <td class='metric_name'>Dewpoint</td>
+    <td class='metric_large' colspan='2' ><a href='dayouttempdew.png' class='popup'>$current.dewpoint.formatted</a></td>
+    <td class='metric_value'>
+      <span title='$day.dewpoint.maxtime'>$day.dewpoint.max.formatted</span><br/>
+      <span title='$day.dewpoint.mintime'>$day.dewpoint.min.formatted</span></td>
+    <td class='metric_units'>$unit.label.dewpoint</td>
+#if $fc_summary
+    <td class='metric_value'>
+      $fc_summary.dewpointMax.nolabel('%.0f',' ')<br/>
+      $fc_summary.dewpointMin.nolabel('%.0f',' ')</td>
+#end if
+  </tr>
+
+  <tr>
+    <td class='metric_name'>Barometer</td>
+    <td class='metric_large' colspan='2' ><a href='daybarometer.png' class='popup'>$current.barometer.formatted</a></td>
+    <td class='metric_value'>
+      <span title='$day.barometer.maxtime'>$day.barometer.max.formatted</span><br/>
+      <span title='$day.barometer.mintime'>$day.barometer.min.formatted</span></td>
+    <td class='metric_units'>$unit.label.barometer<br/>
+#if $varExists('trend') and $trend.barometer.raw is not None
+      $get_pressure_trend($trend.barometer.mbar.raw)
+#end if
+    </td>
+#if $fc_summary
+    <td></td>
+#end if
+  </tr>
+
+  <tr>
+    <td class='metric_name'>Wind</td>
+    <td class='metric_large' colspan='2' >
+      <table cellspacing='0' cellpadding='0'><tr>
+      <td><a href='daywind.png' class='popup'>$current.windSpeed.formatted</a>
+      </td>
+      <td style='font-size:50%;padding-left:8px;'>
+      <a href='daywinddir.png' class='popup'>$current.windDir.ordinal_compass<br/><span style='font-size:90%'>$current.windDir</span></a>
+      </td>
+      <td style='padding-left:8px;'>
+      <a href='daywindvec.png' class='popup'>
+        $get_winddir($current.windDir.raw)
+      </a>
+      </td>
+      </tr></table>
+    </td>
+    <td>
+      <span class='metric_value' title='maximum wind speed at $day.wind.maxtime'>$day.wind.max.formatted</span><br/>
+      <span class='metric_value' title='average wind speed'>$day.wind.avg.formatted</span> avg
+    </td>
+    <td class='metric_units'>$unit.label.windSpeed<br/>
+#if $varExists('trend') and $trend.windSpeed.raw is not None
+      $get_windspeed_trend($trend.windSpeed.formatted)
+#end if
+    </td>
+#if $fc_summary
+    <td class='metric_value'
+  #if $fc_summary.windDirs is not None
+    #set $wind_dir_dict = {'SSW':'SW','WSW':'SW','NNW':'NW','WNW':'NW','SSE':'SE','ESE':'SE','NNE':'NE','ENE':'NE'}
+        style='width:32px; height:32px; vertical-align:middle; text-align:center; background: url()
+    #for $d in $fc_summary.windDirs
+      #set $img = $wind_dir_dict.get($d, $d)
+      #set $winddir_img = 'icons/' + $img + '.png'
+              ,url($winddir_img)
+    #end for
+              ; background-repeat:no-repeat; background-position:center; background-size:32px;'
+  #end if
+        >
+  #if $fc_summary.windSpeedMin == $fc_summary.windSpeedMax or $fc_summary.windSpeedMin.raw == $fc_summary.windSpeedMax.raw
+         $fc_summary.windSpeedMin.nolabel('%.0f',' ')
+  #else
+         $fc_summary.windSpeedMin.nolabel('%.0f',' ')-$fc_summary.windSpeedMax.nolabel('%.0f',' ')
+  #end if
+         <br/>
+         $fc_summary.windGust.nolabel('%.0f',' ')
+    </td>
+#end if
+  </tr>
+
+#if $day.rain.has_data
+  <tr>
+    <td class='metric_name'>Precipitation</td>
+    <td class='metric_large' colspan='2' >
+      <span title='rain within the past hour'>
+        <a href='dayrain.png' class='popup'>$hour.rain.sum.formatted</a>
+      </span>
+    </td>
+    <td class='metric_value'>
+      <span title='maximum rain rate today at $day.rainRate.maxtime'>$day.rainRate.max.formatted</span><br/>
+      <span title='rain since midnight'>$day.rain.sum.formatted</span>
+    </td>
+    <td class='metric_units'>
+      $unit.label.rainRate<br/>
+      $unit.label.rain
+    </td>
+#if $fc_summary
+    <td class='metric_value'>
+  #if $fc_summary.pop.raw > 0
+      $fc_summary.pop.format('%.0f','')
+    #if $fc_summary.qpf.raw > 0
+      <br/>$fc_summary.qpf.nolabel('%.2f','') <img class='pop-img' src='icons/raindrop.png' />
+    #end if
+    #if $fc_summary.qsf.raw > 0
+      <br/>$fc_summary.qsf.nolabel('%.2f','') <img class='pop-img' src='icons/snowflake.png' />
+    #end if
+  #end if
+    </td>
+#end if
+  </tr>
+#end if
+
+#if $day.lightning.has_data
+  <tr>
+    <td class='metric_name'>Lightning</td>
+    <td class='metric_large' colspan='2' >
+      <span title='lightning strikes in the past few minutes'><a href='daylightning.png' class='popup'>$current.lightning.nolabel('%.0f','')</a></span>
+    </td>
+    <td class='metric_value'>
+      <span title='lightning strikes today'>$day.lightning.sum.nolabel('%.0f','')</span>
+    </td>
+    <td class='metric_units'></td>
+#if $fc_summary
+    <td class='metric_value'></td>
+#end if
+  </tr>
+#end if
+
+#if $day.UV.has_data
+  <tr>
+    <td class='metric_name'>UV Index</td>
+    <td class='metric_large' colspan='2' >
+      <span title='UV Index'><a href='dayuv.png' class='popup'>$current.UV.formatted</a></span>
+    </td>
+    <td class='metric_value'>
+      <span title='$day.UV.maxtime'>$day.UV.max.formatted</span><br/>
+      <span title='$day.UV.mintime'>$day.UV.min.formatted</span>
+    </td>
+    <td></td>
+#if $fc_summary
+    <td></td>
+#end if
+  </tr>
+#end if
+
+#if $day.radiation.has_data
+  <tr>
+    <td class='metric_name'>Solar Radiation</td>
+    <td class='metric_large' colspan='2' >
+      <span title='Solar Radiation'><a href='dayradiation.png' class='popup'>$current.radiation.formatted</a></span>
+    </td>
+    <td class='metric_value'>
+      <span title='$day.radiation.maxtime'>$day.radiation.max.formatted</span>
+    </td>
+    <td class='metric_units'>$unit.label.radiation</td>
+#if $fc_summary
+    <td class='metric_value'>
+#if $varExists('day.maxSolarRad')
+      $day.maxSolarRad.max.format('%.0f')<br/>
+      $current.maxSolarRad.format('%.0f')
+#end if
+    </td>
+#end if
+  </tr>
+#end if
+
+#if $day.cloudbase.has_data
+  <tr>
+    <td class='metric_name'>Cloud Base</td>
+    <td class='metric_large' colspan='2' >
+      <span title='Cloud Base'><a href='daycloudbase.png' class='popup'>$current.cloudbase.formatted</a></span>
+    </td>
+    <td class='metric_value'>
+      <span title='$day.cloudbase.maxtime'>$day.cloudbase.max.formatted</span>
+    </td>
+    <td class='metric_units'>$unit.label.cloudbase</td>
+#if $fc_summary
+    <td class='metric_value'></td>
+#end if
+  </tr>
+#end if
+
+#if $Extras.has_key('current_show_inside') and $Extras.current_show_inside == 'true'
+  <tr>
+    <td class='metric_name'>Temperature<br/>Inside</td>
+    <td class='metric_large' colspan='2' >
+      <a href='dayintemphilo.png' class='popup'>$current.inTemp.formatted</a>
+    </td>
+    <td class='metric_value'>
+      <span title='$day.inTemp.maxtime'>$day.inTemp.max.formatted</span><br/>
+      <span title='$day.inTemp.mintime'>$day.inTemp.min.formatted</span>
+    </td>
+    <td class='metric_units'>$unit.label.inTemp</td>
+#if $fc_summary
+    <td></td>
+#end if
+  </tr>
+
+  <tr>
+    <td class='metric_name'>Humidity<br/>Inside</td>
+    <td class='metric_large' colspan='2' >
+      <a href='dayinhum.png' class='popup'>$current.inHumidity.formatted</a>
+    </td>
+    <td class='metric_value'>
+      <span title='$day.inHumidity.maxtime'>$day.inHumidity.max.formatted</span><br/>
+      <span title='$day.inHumidity.mintime'>$day.inHumidity.min.formatted</span>
+    </td>
+    <td class='metric_units'>$unit.label.inHumidity</td>
+#if $fc_summary
+    <td></td>
+#end if
+  </tr>
+#end if
+</table>
+
+</div>
+
+<div class='block'>
+
+#if $Extras.has_key('current_show_celestial') and $Extras.current_show_celestial == 'true'
+
+<table class='metrics'>
+  <tr>
+    <td class='table_heading' colspan="4">CELESTIAL</td>
+  </tr>
+#if $almanac.hasExtras
+  #set $sunrise_ts = $almanac.sun.rise.raw
+  #set $sunset_ts = $almanac.sun.set.raw
+  #set $daylight_s = $sunset_ts - $sunrise_ts
+  #set $daylight_hours = int($daylight_s / 3600)
+  #set $daylight_minutes = int(($daylight_s % 3600) / 60)
+  #set $daylight_h_str = "%02d" % $daylight_hours
+  #set $daylight_m_str = "%02d" % $daylight_minutes
+  <tr>
+    <td class='metric_name'>Sunrise</td>
+    <td class='metric_value'>$almanac.sun.rise</td>
+    <td class='metric_name'>Moonrise</td>
+    <td class='metric_value'>$almanac.moon.rise</td>
+  </tr>
+  <tr>
+    <td class='metric_name'>Sunset</td>
+    <td class='metric_value'>$almanac.sun.set</td>
+    <td class='metric_name'>Moonset</td>
+    <td class='metric_value'>$almanac.moon.set</td>
+  </tr>
+  <tr>
+    <td class='metric_name'>Daylight</td>
+    <td class='metric_value'>$daylight_h_str:$daylight_m_str</td>
+    <td class='metric_name'>$almanac.moon_phase</td>
+    <td class='metric_value'>$almanac.moon_fullness %</td>
+  </tr>
+#else
+  <tr>
+    <td class='metric_name'>Sunrise</td>
+    <td class='metric_value'>$almanac.sunrise</td>
+    <td class='metric_name'>$almanac.moon_phase</td>
+    <td class='metric_value'>$almanac.moon_fullness %</td>
+  </tr>
+  <tr>
+    <td class='metric_name'>Sunset</td>
+    <td class='metric_value'>$almanac.sunset</td>
+  </tr>
+#end if
+</table>
+
+#end if
+
+#if $Extras.has_key('current_show_tides') and $Extras.current_show_tides == 'true' and $varExists('forecast')
+  #set $tstart = time.time() - 3600
+  #set $tend = $tstart + 26*3600
+  #set $tides = $forecast.xtides(from_ts=$tstart, max_events=6)
+  #if len($tides) > 0
+<table class='metrics'>
+  <tr>
+    <td class='table_heading' colspan='4'>TIDES</td>
+  </tr>
+    #for $tide in $tides
+      #if $tstart <= $tide.event_ts.raw < $tend
+  <tr>
+    <td class='metric_name'>$tide.event_ts.format('%H:%M')</td>
+    <td class='metric_value'>$tide.hilo</td>
+    <td class='metric_value' style='text-align:right'>$tide.offset.nolabel('%.1f')</td>
+    <td class='metric_units'>$unit.label.altitude</td>
+  </tr>
+      #end if
+    #end for
+</table>
+  #end if
+#end if
+
+#if $Extras.has_key('current_show_forecast_summary') and $Extras.current_show_forecast_summary == 'true' and $varExists('forecast')
+<table class='forecast_summary'>
+  <tr>
+    <td class='table_heading'>FORECAST</td>
+  </tr>
+  <tr style='vertical-align:top'>
+    <td class='zambretti'>
+  #if $varExists('forecast.zambretti')
+$forecast.label('Zambretti', $forecast.zambretti.code) <br/>
+  #end if
+  #if $fc_summary
+      <table>
+        <tr style='vertical-align:top'>
+          <td>
+  #if $fc_summary.clouds is not None
+    #set $simg = 'icons/' + $fc_summary.clouds + '.png'
+<a href='forecast.html'><img src='$simg' alt='$fc_summary.clouds' title='$forecast.label('Weather', $fc_summary.clouds)' border='0'/></a>
+  #end if
+          </td>
+          <td>
+  #for $k in $fc_summary.precip
+    #set $precip_img = 'icons/' + $k + '.png'
+         <img class='precip-img' src='$precip_img' alt='$k' title='$forecast.label('Weather', $k)' /><br/>
+  #end for
+          </td>
+          <td>
+  #for $k in $fc_summary.obvis
+    #set $obvis_img = 'icons/' + $k + '.png'
+         <img class='obvis-img' src='$obvis_img' alt='$k' title='$forecast.label('Weather', $k)' /><br/>
+  #end for
+          </td>
+        </tr>
+      </table>
+  #end if
+    </td>
+  </tr>
+</table>
+
+#end if
+
+#if $Extras.has_key('current_show_forecast_table') and $Extras.current_show_forecast_table == 'true' and $varExists('forecast')
+
+<table width='100%'>
+  <tr>
+    <td class='table_heading'>FORECAST</td>
+  </tr>
+</table>
+
+#if $varExists('Extras') and $Extras.has_key('current_page_forecast_settings')
+#set global $forecast_table_settings = dict()
+#for $k in $Extras.current_page_forecast_settings
+#set global $forecast_table_settings[$k] = $Extras.current_page_forecast_settings[$k]
+#end for
+#end if
+
+#include "forecast_table.inc"
+
+#end if
+
+</div>
+
+<div class='block'>
+
+#if $Extras.has_key('links_radar_local_img') and $Extras.has_key('current_show_radar') and $Extras.current_show_radar == 'true'
+
+<p>
+  <a  href='$Extras.links_radar_local_img'>
+    <img class='radar' src='$Extras.links_radar_local_img' alt='radar'/>
+  </a>
+</p>
+
+#end if
+
+</div>
+
+  </div>
+
+#include "footer.inc"
+
+  </body>
+</html>

@@ -1,0 +1,86 @@
+These are design notes for the exfoliation skin
+
+Design of the forecast display
+
+  The forecast page displays a vertical column of data from now into the
+  future, with the oldest date first.  Each date line can be expanded to
+  show the 3- or 6-hour detailed forecast for that day.  Each date line
+  contains aggregate values for those data that vary over the course of
+  the day.
+
+  date   overview  temp  wind  precip  obvis  (ptype)  (wave)  (tide)
+  date
+    time 
+    time
+    time
+    time
+    time 
+    time
+    time
+    time
+  date
+  date
+  date
+    time
+    time
+    time
+    time
+
+
+Icons for the forecast display
+
+misc
+
+triangle-down.png
+triangle-right.png
+
+legend
+
+temperature.png
+dewpoint.png
+humidity.png
+popqpf.png
+wind.png
+
+outlook
+
+CL.png
+CLn.png
+FW.png
+FWn.png
+SC.png
+SCn.png
+B1.png
+B1n.png
+B2.png
+B2n.png
+BK.png
+BKn.png
+OV.png
+OVn.png
+
+obstructions to visibility
+
+F.png
+PF.png
+F+.png
+PF+.png
+H.png
+BS.png
+K.png
+BD.png
+AF.png
+
+precipitation types
+
+rain.png
+rainshwrs.png
+sprinkles.png
+tstms.png
+drizzle.png
+snow.png
+snowshwrs.png
+flurries.png
+sleet.png
+frzngrain.png
+frzngdrzl.png

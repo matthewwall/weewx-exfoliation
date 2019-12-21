@@ -1,0 +1,171 @@
+/* css for the exfoliation skin */
+/* Copyright 2012-2013 Matthew Wall */
+/* $Id: exfoliation.css 1751 2017-10-10 03:10:18Z mwall $ */
+
+/* use the fonts from google */
+/* @import url('https://fonts.googleapis.com/css?family=Open+Sans'); */
+
+/* use the local fonts */
+@font-face {
+    font-family: 'Roboto';
+    src: url('font/Roboto-Regular.woff') format('woff'),
+    url('font/Roboto-Regular.woff2') format('woff2');
+}
+
+body {
+  font-family: 'Roboto', arial, sans-serif;
+  font-size: 10pt;
+  background-color: #ffffff;
+}	
+h1 {
+  font-size: 110%;
+}
+h2 {
+  font-size: 100%;
+}
+a:link {
+  text-decoration: none;
+  color: #207020;
+}
+a:hover {
+  text-decoration: none;
+  color: #30a030;
+}
+a:visited {
+  text-decoration: none;
+  color: #207020;
+}
+
+.header {
+  clear: both;
+  margin: 0;
+  padding: 0;
+}
+
+#content {
+  clear: both;
+}
+
+#station_info {
+}
+.station_title {
+  font-size: 120%;
+  font-weight: bold;
+}
+.station_subtitle {
+  font-size: 100%;
+}
+.station_location {
+  font-size: 80%;
+}
+.station_time {
+  font-size: 80%;
+}
+
+#observation_title {
+  clear: left;
+  font-weight: bold;
+  padding-top: 2px;
+}
+
+.navigation_controls {
+}
+.navigation_controls a {
+  padding-right: 1.0em;
+}
+
+#data_graphs {
+}
+
+#data_table {
+  float: right;
+}
+
+.footer {
+  clear: both;
+  padding-top: 10px;
+}
+.footer p {
+  font-size: 8pt;
+  font-style: italic;
+  color: #aaaaaa;
+}
+
+.metrics {
+  width: 100%;
+}
+.metrics tr {
+  vertical-align: top;
+}
+.metrics a {
+  text-decoration: none;
+}
+.metric_title {
+  text-align: left;
+  font-weight: bold;
+}
+.metric_name {
+  text-align: right;
+}
+.metric_large {
+  text-align: left;
+  font-weight: bold;
+  font-size: 230%;
+}
+.metric_value {
+  text-align: left;
+  font-weight: bold;
+}
+.metric_units {
+  text-align: left;
+}
+.hilo_time {
+  text-align: left;
+  color: #aaaaaa;
+  font-size: 85%;
+}
+.link_large {
+  font-weight: bold;
+  font-size: 180%;
+}
+
+#graphPopup {
+  margin: 0px;
+  padding: 0px;
+  border: 1px solid #dddddd;
+}
+
+.btn {
+  color: #207020;
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  background-color: #f0f0f0;
+  border: 1px solid #c0c0c0;
+  cursor: pointer;
+}
+.btn_selected {
+  color: #207020;
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  background-color: #b0d0d0;
+  border: 1px solid #c0c0c0;
+  cursor: pointer;
+}
+
+@media (max-width:600px) {
+  .navigation_controls {
+    padding-top: 10px;
+  }
+}
+@media (min-width:601px) {
+  #station_info {
+    float: left;
+  }
+  .navigation_controls {
+    float: right;
+  }
+}

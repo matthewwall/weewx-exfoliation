@@ -1,0 +1,252 @@
+## exfoliation for weewx - Copyright 2012-2013 Matthew Wall
+## $Id: forecast.html.tmpl 1764 2017-10-10 11:17:07Z mwall $
+#errorCatcher Echo
+#encoding UTF-8
+
+#set $desired_forecasts = ['WU', 'Aeris', 'OWM', 'WWO', 'NWS', 'UKMO']
+#set $forecast_info = {'WU': 'Weather Underground', 'Aeris': 'Aeris', 'OWM': 'Open WeatherMap', 'WWO': 'World Weather Online', 'NWS': 'US National Weather Service', 'UKMO': 'UK Met Office'}
+
+#set $desired_formats = ['iconic', 'table', 'strip', 'cmp']
+#set $format_label = {'iconic': 'Iconic', 'table': 'Table', 'strip': 'Strip', 'cmp': 'Compare'}
+
+#set $forecast_settings = dict()
+#set $forecast_settings['num_periods'] = 300
+#set $forecast_settings['show_legend'] = 1
+#set $forecast_settings['show_hourly'] = 1
+#set $forecast_settings['show_day'] = 1
+#set $forecast_settings['show_date'] = 1
+#set $forecast_settings['show_outlook'] = 1
+#set $forecast_settings['show_temp'] = 1
+#set $forecast_settings['show_dewpoint'] = 1
+#set $forecast_settings['show_wind'] = 1
+#set $forecast_settings['show_tides'] = 1
+#set $forecast_settings['show_sun'] = 1
+#set $forecast_settings['show_moon'] = 1
+#set $forecast_settings['show_moonphase'] = 1
+#set $forecast_settings['show_pop'] = 1
+#set $forecast_settings['show_precip'] = 1
+#set $forecast_settings['show_obvis'] = 1
+#set $forecast_settings['orientation'] = 'horizontal'
+
+## Override settings with anything specified in extras
+#if 'forecast_sources' in $Extras
+#set $desired_forecasts = $Extras['forecast_sources']
+#end if
+
+#if 'forecast_formats' in $Extras
+#set $desired_formats = $Extras['forecast_formats']
+#end if
+
+#if 'forecast_page_forecast_settings' in $Extras
+#for $v in $Extras.forecast_page_forecast_settings
+#set $forecast_settings[$v] = $Extras.forecast_page_forecast_settings[$v]
+#end for
+#end if
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml'>
+  <head profile='http://www.w3.org/2005/10/profile'>
+    <!-- exfoliation for weewx - Copyright Matthew Wall -->
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+    <meta name='viewport' content='width=device-width' />
+    <title>$station.location Forecast</title>
+    <link rel='stylesheet' type='text/css' href='exfoliation.css'/>
+    <link rel='stylesheet' type='text/css' href='forecast_iconic.css'/>
+    <link rel='stylesheet' type='text/css' href='forecast_table.css'/>
+    <link rel='stylesheet' type='text/css' href='forecast_strip.css'/>
+    <link rel='icon' type='image/png' href='favicon.ico' />
+    <script type='text/javascript' src='cookies.js'></script>
+    <style>
+.fc_pane {
+  display: none;
+}
+.forecast_select {
+  padding-top: 15px;
+  padding-bottom: 10px;
+}
+.forecast_table {
+  display: none;
+}
+.forecast_iconic {
+  display: none;
+}
+// ensure that the generic .temp class does not get borked by iconic
+.iconic-horizontal .temp {
+    float: left;
+}
+.iconic-vertical .temp {
+    float: left;
+}
+.temp {
+    float: none;
+}
+    </style>
+    <script>
+var forecasts = [
+#for $f in $desired_forecasts
+  '$f',
+#end for
+];
+var formats = [
+#for $f in $desired_formats
+  '$f',
+#end for
+];
+
+function choose_pane(id) {
+  set_cookie('weather.forecast.pane', id);
+  for(var i=0; i<formats.length; i++) {
+    var c = document.getElementById('btn_'+formats[i]);
+    if(c) c.className = (formats[i] == id) ? 'btn_selected' : 'btn';
+    var g = document.getElementById('fc_pane_'+formats[i]);
+    if(g) g.style.display = (formats[i] == id) ? 'block' : 'none';
+  }
+}
+
+function choose_forecast(fcID) {
+  set_cookie('weather.forecast.source', fcID);
+  populate_strip('forecast_strip', fcID);
+  var fmts = ['iconic', 'table'];
+  for(var j=0; j<fmts.length; j++) {
+    for(var i=0; i<forecasts.length; i++) {
+      var id = forecasts[i] + '_' + fmts[j];
+      elem = document.getElementById(id);
+      if(elem) {
+        if(forecasts[i] == fcID) {
+          elem.style.display = 'inline';
+        } else {
+          elem.style.display = 'none';
+        }
+      }
+    }
+  }
+  var e = document.getElementById('strip_selector');
+  if(e) { e.value = fcID; }
+  var e = document.getElementById('table_selector');
+  if(e) { e.value = fcID; }
+  var e = document.getElementById('iconic_selector');
+  if(e) { e.value = fcID; }
+}
+
+function setup() {
+  var fmt = get_cookie('weather.forecast.pane', '$desired_formats[0]');
+  choose_pane(fmt);
+  var source = get_cookie('weather.forecast.source', '$desired_forecasts[0]');
+  choose_forecast(source);
+}
+    </script>
+  </head>
+
+  <body onload='setup();'>
+#include "header.inc"
+
+<div id='content'>
+
+  <div class='navigation_controls'>
+#for $f in $desired_formats
+    <span class='btn' id='btn_$f' href="#" onclick="choose_pane('$f')">$format_label[$f]</span>
+#end for
+  </div>
+
+
+#if 'iconic' in $desired_formats
+  <div id='fc_pane_iconic' class='fc_pane'>
+<p class='forecast_select'>
+<select id='iconic_selector' onchange='choose_forecast(value)'>
+#for $forecast_id in $desired_forecasts
+  <option value="$forecast_id">$forecast_info[$forecast_id]</option>
+#end for
+</select>
+</p>
+#for $forecast_id in $desired_forecasts
+#set $forecast_settings['source'] = $forecast_id
+#set global $forecast_iconic_settings = $forecast_settings
+<div id="${forecast_id}_iconic" class='forecast_iconic'>
+#include "forecast_iconic.inc"
+</div>
+#end for
+  </div>
+#end if
+
+
+#if 'table' in $desired_formats
+  <div id='fc_pane_table' class='fc_pane'>
+<p class='forecast_select'>
+<select id='table_selector' onchange='choose_forecast(value)'>
+#for $forecast_id in $desired_forecasts
+  <option value="$forecast_id">$forecast_info[$forecast_id]</option>
+#end for
+</select>
+</p>
+#for $forecast_id in $desired_forecasts
+#set $forecast_settings['source'] = $forecast_id
+#set global $forecast_table_settings = $forecast_settings
+<div id="${forecast_id}_table" class='forecast_table'>
+#include "forecast_table.inc"
+</div>
+#end for
+  </div>
+#end if
+
+
+#if 'strip' in $desired_formats
+  <div id='fc_pane_strip' class='fc_pane'>
+#for $forecast_id in $desired_forecasts
+#set $forecast_settings['source'] = $forecast_id
+#set global $forecast_strip_settings = $forecast_settings
+#include "forecast_strip.inc"
+#end for
+<div class='forecast_select'>
+<select id='strip_selector' onchange='choose_forecast(value)'>
+#for $forecast_id in $desired_forecasts
+  <option value="$forecast_id">$forecast_info[$forecast_id]</option>
+#end for
+</select>
+</div>
+<div id='forecast_strip' class='forecast_strip'></div>
+  </div>
+#end if
+
+
+#if 'cmp' in $desired_formats
+  <div id='fc_pane_cmp' class='fc_pane'>
+    <div>
+      <p>Temperatures Compared<p>
+      <img src="fc_temp.png" title="Temperatures"/>
+      <p>Probability of Precipitation Compared<p>
+      <img src="fc_pop.png" title="Propability of Precipitation"/>
+      <p>Wind Speed Compared<p>
+      <img src="fc_windSpeed.png" title="Wind Speed"/>
+    </div>
+    <div>
+      <p>WU Temperatures<p>
+      <img src="wu_temp.png" title="WU Temperatures"/>
+      <p>WU Probability of Precipitation<p>
+      <img src="wu_pop.png" title="WU Propability of Precipitation"/>
+      <p>WU Wind Speed<p>
+      <img src="wu_windSpeed.png" title="WU Wind Speed"/>
+    </div>
+    <div>
+      <p>Aeris Temperatures<p>
+      <img src="aeris_temp.png" title="Aeris Temperatures"/>
+      <p>Aeris Probability of Precipitation<p>
+      <img src="aeris_pop.png" title="Aeris Propability of Precipitation"/>
+      <p>Aeris Wind Speed<p>
+      <img src="aeris_windSpeed.png" title="Aeris Wind Speed"/>
+    </div>
+    <div>
+      <p>NWS Temperatures<p>
+      <img src="nws_temp.png" title="NWS Temperatures"/>
+      <p>NWS Probability of Precipitation<p>
+      <img src="nws_pop.png" title="NWS Propability of Precipitation"/>
+      <p>NWS Wind Speed<p>
+      <img src="nws_windSpeed.png" title="NWS Wind Speed"/>
+    </div>
+  </div>
+#end if
+
+
+</div>
+#include "footer.inc"
+  </body>
+</html>
