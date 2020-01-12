@@ -1,5 +1,6 @@
 This is the skin exfoliation for the weewx weather system.
 Copyright 2012-2017 Matthew Wall
+Distributed under terms of the GPLv3
 
 Installation instructions:
 

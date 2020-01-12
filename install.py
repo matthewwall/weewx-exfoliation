@@ -1,8 +1,8 @@
-# $Id: install.py 1782 2018-01-27 18:17:02Z mwall $
 # installer for exfoliation
 # Copyright 2014-2017 Matthew Wall
+# Distributed under the terms of the GNU Public License (GPLv3)
 
-from setup import ExtensionInstaller
+from weecfg.extension import ExtensionInstaller
 
 def loader():
     return ExfoliationInstaller()
